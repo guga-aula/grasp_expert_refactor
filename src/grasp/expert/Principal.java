@@ -8,14 +8,14 @@ public class Principal {
 		
 		DVD dvd2 = new DVD("Filme 2", DVD.Tipo.normal);
 		
-		Aluguel al1 = new Aluguel(dvd1, 3);
-		Aluguel al2 = new Aluguel(dvd2, 3);
+		Alugaveis al1 = new AluguelLancamento(dvd1, 4);
+		Alugaveis al2 = new AluguelNormal(dvd2, 5);
 		
 		Cliente c1 = new Cliente("Gustavo");
 		
 		c1.adicionaAluguel(al1);
 		c1.adicionaAluguel(al2);
 		
-		System.out.println(c1.extrato());
+		c1.extrato();
 	}
 }

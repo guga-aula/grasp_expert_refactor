@@ -6,8 +6,8 @@ import java.util.Collection;
 public class Cliente {
 
 	private String nome;
-
-    private Collection<Aluguel> fitasAlugadas = new ArrayList<Aluguel>();
+	private int pontosDeAlugadorFrequente = 0;
+    private Collection<Alugaveis> dvdAlugados = new ArrayList<>();
 
     public Cliente(String nome) {
         this.nome = nome;
@@ -17,58 +17,33 @@ public class Cliente {
         return nome;
     }
 
-    public void adicionaAluguel(Aluguel aluguel) {
-        fitasAlugadas.add(aluguel);
+    public void adicionaAluguel(Alugaveis aluguel) {
+    	dvdAlugados.add(aluguel);
     }
 
-    public String extrato() {
-        final String fimDeLinha = System.getProperty("line.separator");
+    public void extrato() {
+        
         double valorTotal = 0.0;
-        int pontosDeAlugadorFrequente = 0;
-        String resultado = "Registro de Alugueis de " + getNome() + fimDeLinha;
-
-        for (Aluguel f : fitasAlugadas) {
-
-            double valorCorrente = 0.0;
-            Aluguel cada = f;
-
-            // determina valores para cada linha
-            // switch com enum
-            switch (cada.getFita().getCódigoDePreço()) {
-            case normal:
-                valorCorrente += 2;
-                if (cada.getDiasAlugada() > 2) {
-                    valorCorrente += (cada.getDiasAlugada() - 2) * 1.5;
-                }
-                break;
-            case lancamento:
-                valorCorrente += cada.getDiasAlugada() * 3;
-                break;
-            case infantil:
-                valorCorrente += 1.5;
-                if (cada.getDiasAlugada() > 3) {
-                    valorCorrente += (cada.getDiasAlugada() - 3) * 1.5;
-                }
-                break;
-            } // switch
-            // trata de pontos de alugador frequente
-            pontosDeAlugadorFrequente++;
-            // adiciona bonus para aluguel de um lançamento por pelo menos 2
-            // dias
-            if (cada.getFita().getCódigoDePreço() == DVD.Tipo.lancamento
-                && cada.getDiasAlugada() > 1) {
-                pontosDeAlugadorFrequente++;
-            }
-
-            // mostra valores para este aluguel
-            resultado += "\t" + cada.getFita().getTítulo() + "\t"
-                         + valorCorrente + fimDeLinha;
-            valorTotal += valorCorrente;
-        } // while
-        // adiciona rodapé
-        resultado += "Valor total devido: " + valorTotal + fimDeLinha;
-        resultado += "Voce acumulou " + pontosDeAlugadorFrequente
-                     + " pontos de alugador frequente";
-        return resultado;
+        System.out.println(toString());
+        
+        for (Alugaveis f : dvdAlugados) 
+        {
+            Alugaveis cada = f;
+            pontosDeAlugadorFrequente += cada.calcularFidelidade();
+            cada.calcularAluguel();
+            System.out.println(cada);
+            valorTotal += cada.getValorCorrente();
+        }
+        System.out.println("Valor total devido: " + valorTotal);
+        System.out.println("Você acumulou "+pontosDeAlugadorFrequente+
+        		" de fidelidade");
+    }
+    
+    @Override
+    public String toString() {
+    	String resultado = "Registro de Alugueis de " + getNome() + "\n";
+		resultado += "Saldo anterior fidelidade " + pontosDeAlugadorFrequente
+		+ " pontos de alugador frequente";
+    	return resultado;
     }
 }
